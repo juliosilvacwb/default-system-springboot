@@ -6,21 +6,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-// import springfox.documentation.builders.ApiInfoBuilder;
-// import springfox.documentation.builders.PathSelectors;
-// import springfox.documentation.builders.RequestHandlerSelectors;
-// import springfox.documentation.service.ApiInfo;
-// import springfox.documentation.spi.DocumentationType;
-// import springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration;
-// import springfox.documentation.spring.web.plugins.Docket;
-// import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.data.rest.configuration.SpringDataRestConfiguration;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 /**
  * SwaggerConfiguration
  */
-// @Configuration
-// @EnableSwagger2WebMvc
-// @Import(SpringDataRestConfiguration.class)
+@Configuration
+@EnableSwagger2WebMvc
+@Import(SpringDataRestConfiguration.class)
 public class SwaggerConfiguration {
 
     private static final String PATH_MAPPING = "/";
@@ -37,24 +37,24 @@ public class SwaggerConfiguration {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
-    // @Bean
-    // Docket rsApi() {
-    //     return new Docket(DocumentationType.SWAGGER_12)
-    //             .apiInfo(apiInfo())
-    //             .select()
-    //             .apis(RequestHandlerSelectors.any())
-    //             .paths(PathSelectors.any())
-    //             .build()
-    //             .pathMapping(PATH_MAPPING)
-    //             .useDefaultResponseMessages(false);
-    //         }
+    @Bean
+    Docket rsApi() {
+        return new Docket(DocumentationType.SWAGGER_12)
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build()
+                .pathMapping(PATH_MAPPING)
+                .useDefaultResponseMessages(false);
+            }
 
-    // private ApiInfo apiInfo() {
-    //     return new ApiInfoBuilder()
-    //             .title(projectName)
-    //             .description(projectDescription + " - Profile: " + activeProfile)
-    //             .version(projectVersion)
-    //             .build();
-    // }
+    private ApiInfo apiInfo() {
+        return new ApiInfoBuilder()
+                .title(projectName)
+                .description(projectDescription + " - Profile: " + activeProfile)
+                .version(projectVersion)
+                .build();
+    }
 
 }
