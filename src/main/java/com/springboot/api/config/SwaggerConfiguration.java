@@ -37,24 +37,24 @@ public class SwaggerConfiguration {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
-    @Bean
-    Docket rsApi() {
-        return new Docket(DocumentationType.SWAGGER_12)
-                .apiInfo(apiInfo())
-                .select()
-                .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-                .build()
-                .pathMapping(PATH_MAPPING)
-                .useDefaultResponseMessages(false);
-            }
+    // @Bean
+    // Docket rsApi() {
+    //     return new Docket(DocumentationType.SWAGGER_12)
+    //             .apiInfo(apiInfo())
+    //             .select()
+    //             .apis(RequestHandlerSelectors.any())
+    //             .paths(PathSelectors.any())
+    //             .build()
+    //             .pathMapping(PATH_MAPPING)
+    //             .useDefaultResponseMessages(false);
+    //         }
 
-    private ApiInfo apiInfo() {
-        return new ApiInfoBuilder()
-                .title(projectName)
-                .description(projectDescription + " - Profile: " + activeProfile)
-                .version(projectVersion)
-                .build();
-    }
+    // private ApiInfo apiInfo() {
+    //     return new ApiInfoBuilder()
+    //             .title(projectName)
+    //             .description(projectDescription + " - Profile: " + activeProfile)
+    //             .version(projectVersion)
+    //             .build();
+    // }
 
 }
