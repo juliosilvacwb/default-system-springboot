@@ -29,12 +29,12 @@ public class UserDTO {
 
     private Long id;
 
-    @NotNull(message = "Firstname is required")
+    @NotNull(message = "{firstname.required}")
     private String firstname;
     private String lastname;
     private String password;
 
-    @NotNull(message = "Email is required")
+    @NotNull(message = "{email.required}")
     private String email;
 
     private List<RoleDTO> roles;

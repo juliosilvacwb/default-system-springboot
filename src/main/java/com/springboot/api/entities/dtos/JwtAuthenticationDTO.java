@@ -18,6 +18,6 @@ public class JwtAuthenticationDTO {
 
     private String email;
 
-    @NotEmpty(message = "Password is requerid")
+    @NotEmpty(message = "{password.required}")
     private String password;
 }

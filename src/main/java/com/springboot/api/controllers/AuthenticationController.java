@@ -14,6 +14,8 @@ import com.springboot.api.security.utils.JTWTokenUtil;
 import com.springboot.api.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -52,6 +54,9 @@ public class AuthenticationController {
     
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * new Token
@@ -98,9 +103,9 @@ public class AuthenticationController {
         }
 
         if (!token.isPresent()) {
-            response.addError("Token is required");
+            response.addError(messageSource.getMessage("token.required", null, LocaleContextHolder.getLocale()));
         } else if (!jtwTokenUtil.validToken(token.get())) {
-            response.addError("Invalid token");
+            response.addError(messageSource.getMessage("invalid.token", null, LocaleContextHolder.getLocale()));
         }
 
         if (!response.getErrors().isEmpty()) {
@@ -123,9 +128,9 @@ public class AuthenticationController {
         }
 
         if (!token.isPresent() || !jtwTokenUtil.validToken(token.get())) {
-            response.setBody("Is not authenticated");
+            response.setBody(messageSource.getMessage("not.authenticated", null, LocaleContextHolder.getLocale()));
         } else {
-            response.setBody("Authenticated");
+            response.setBody(messageSource.getMessage("authenticated", null, LocaleContextHolder.getLocale()));
         }
 
         return ResponseEntity.ok(response);

@@ -51,12 +51,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull(message = "Firstname is required")
+    @NotNull(message = "{firstname.required}")
     @Column(nullable = false)
     private String firstname;
     private String lastname;
 
-    @NotNull(message = "Email is required")
+    @NotNull(message = "{email.required}")
     @Column(nullable = false)
     private String email;
 
