@@ -1,19 +1,23 @@
 package com.springboot.api.repositories;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Optional;
 
 import com.springboot.api.entities.Module;
+import com.springboot.api.utils.Utils;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * UserRepositoryTest
@@ -27,13 +31,17 @@ public class ModuleRepositoryTest {
     @Autowired
     private ModuleRepository moduleRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(Utils.provideAuthentication());
+        SecurityContextHolder.setContext(securityContext);
+        
         Module module = Module.builder().name("ADMIN").build();
         this.moduleRepository.save(module);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         this.moduleRepository.deleteAll();
     }

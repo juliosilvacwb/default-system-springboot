@@ -1,8 +1,8 @@
 package com.springboot.api.repositories;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,20 +12,24 @@ import com.springboot.api.entities.Company;
 import com.springboot.api.entities.Module;
 import com.springboot.api.entities.Role;
 import com.springboot.api.entities.User;
+import com.springboot.api.utils.Utils;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
  * UserRepositoryTest
@@ -57,8 +61,11 @@ public class UserRepositoryTest {
     private User user;
     private Pageable pageable;
 
-    @Before
+    @BeforeEach
     public void setUp() {
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(Utils.provideAuthentication());
+        SecurityContextHolder.setContext(securityContext);
 
         this.pageable = PageRequest.of(0, 25, Sort.by(Order.asc("firstname"), Order.desc("id")));
 
@@ -76,7 +83,7 @@ public class UserRepositoryTest {
         user = User.builder()
                         .firstname("Fulano")
                         .email("fulano@email.com")
-                        .password(passwordEncoder.encode("live0102"))
+                        .password(passwordEncoder.encode("teste"))
                         .company(company)
                         .roles(roles)
                         .modules(modules)
@@ -86,7 +93,7 @@ public class UserRepositoryTest {
         this.userRepository.save(user);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         this.userRepository.deleteAll();
         this.roleRepository.deleteAll();
@@ -118,7 +125,7 @@ public class UserRepositoryTest {
         Optional<User> user = this.authenticationRepository.findByEmail("fulano@email.com");
         assertNotNull(user.get());
         assertNotNull(user.get().getCompany());
-        assertTrue(passwordEncoder.matches("live0102", user.get().getPassword()));
+        assertTrue(passwordEncoder.matches("teste", user.get().getPassword()));
     }
    
 }
