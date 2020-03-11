@@ -11,4 +11,5 @@ public interface UserService {
 
     Optional<User> findById(Long id) throws Exception ;
     Optional<User> findUserByEmail(String email);
+	String setup();
 }

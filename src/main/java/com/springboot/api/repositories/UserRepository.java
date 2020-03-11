@@ -42,4 +42,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     @Query("select distinct(u) from User u join u.company c where c.id = :companyId and lower(u.firstname) like lower(concat('%', :firstname,'%'))")
     List<User> findByFirstname(@Param("companyId") Long companyId, @Param("firstname") String firstname, Pageable pageable);
 
+    @RestResource(exported = false)
+	Optional<User> findByEmail(String string);
+
 }
