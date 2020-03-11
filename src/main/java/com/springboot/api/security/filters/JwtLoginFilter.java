@@ -58,7 +58,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         final JwtUser jwtUser = (JwtUser) auth.getPrincipal();
         final String token = jwtTokenUtil.getToken(jwtUser);
-        res.addHeader(JwtTokenUtil.getTokenPrefix(), JwtTokenUtil.getHeaderAccessToken() + " " + token);
+        res.addHeader(JwtTokenUtil.getTokenPrefix(), token);
 
         Optional<User> optionalUser = userService.findUserByEmail(jwtUser.getUsername());
         UserDTO userDTO = UserDTO.parseUserDTO(optionalUser.get());
