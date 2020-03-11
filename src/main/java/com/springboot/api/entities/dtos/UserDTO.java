@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springboot.api.entities.User;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +18,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * UserDTO
@@ -24,7 +27,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@JsonInclude(Include.NON_NULL)
 public class UserDTO {
 
     private Long id;
@@ -52,25 +55,34 @@ public class UserDTO {
     private Integer version;
 
     public static UserDTO parseUserDTO(User user) {
-        return UserDTO.builder()
-                .id(user.getId())
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
-                .email(user.getEmail())
-                .company(CompanyDTO.parseCompanyDTO(user.getCompany()))
-                .roles(user.getRoles()
-                        .stream()
-                        .map(RoleDTO::parseRoleDTO)
-                        .collect(Collectors.toList()))
-                .modules(user.getModules()
-                            .stream()
-                            .map(ModuleDTO::parseModuleDTO)
-                            .collect(Collectors.toList()))
-                .createDate(user.getCreateDate())
-                .updateDate(user.getUpdateDate())
-                .version(user.getVersion())
-                .build();
+        return UserDTO.builder().id(user.getId()).firstname(user.getFirstname()).lastname(user.getLastname())
+                .email(user.getEmail()).company(CompanyDTO.parseCompanyDTO(user.getCompany()))
+                .roles(user.getRoles().stream().map(RoleDTO::parseRoleDTO).collect(Collectors.toList()))
+                .modules(user.getModules().stream().map(ModuleDTO::parseModuleDTO).collect(Collectors.toList()))
+                .createDate(user.getCreateDate()).updateDate(user.getUpdateDate()).version(user.getVersion()).build();
 
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#toString()
+     */
+
+    @Override
+    public String toString() {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString;
+        try {
+            jsonString = mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            jsonString = super.toString();
+        }
+        return jsonString;
+    }
+
+
+    
 
 }

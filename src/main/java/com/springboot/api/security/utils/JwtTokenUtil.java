@@ -11,20 +11,33 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.Getter;
 
 /**
  * JTWTokenUtil
  */
 @Component
-public class JTWTokenUtil {
+public class JwtTokenUtil {
 
     static final String CLAIM_KEY_USERNAME = "sub";
     static final String CLAIM_KEY_ROLE = "role";
     static final String CLAIM_KEY_CREATED = "created";
+    static final String TOKEN_PREFIX = "Bearer";
+    static final String HEADER_ACCESS_TOKEN = "Authorization";
 
+    public static String getTokenPrefix() {
+        return TOKEN_PREFIX;
+    }
+   
+    public static String getHeaderAccessToken() {
+        return HEADER_ACCESS_TOKEN;
+    }
+
+    @Getter
     @Value("${jwt.secret}")
     private String secret;
 
+    @Getter
     @Value("${jwt.expiration}")
     private Long expiration;
 

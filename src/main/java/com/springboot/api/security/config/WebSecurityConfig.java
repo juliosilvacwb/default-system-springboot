@@ -2,6 +2,9 @@ package com.springboot.api.security.config;
 
 import com.springboot.api.security.JwtAuthenticationEntryPoint;
 import com.springboot.api.security.filters.JwtAuthenticationTokenFilter;
+import com.springboot.api.security.filters.JwtLoginFilter;
+import com.springboot.api.security.utils.JwtTokenUtil;
+import com.springboot.api.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +38,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -46,12 +54,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
     @Bean
     public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
         return new JwtAuthenticationTokenFilter();
     }
 
     private static final String[] AUTH_WHITELIST = {
+        "/login",
         "/auth",
         "/auth/**",
         "/actuator/**",
@@ -81,6 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .anyRequest()
             .authenticated();
 
+        httpSecurity.addFilterBefore(new JwtLoginFilter("/login", authenticationManager(), jwtTokenUtil, userService), UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
         httpSecurity.headers().cacheControl();
         

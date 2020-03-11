@@ -3,32 +3,18 @@ package com.springboot.api.controllers;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
-import com.springboot.api.entities.User;
-import com.springboot.api.entities.dtos.JwtAuthenticationDTO;
 import com.springboot.api.entities.dtos.ResponseDTO;
 import com.springboot.api.entities.dtos.TokenDTO;
-import com.springboot.api.entities.dtos.UserDTO;
-import com.springboot.api.security.utils.JTWTokenUtil;
-import com.springboot.api.services.UserService;
+import com.springboot.api.security.utils.JwtTokenUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,54 +30,10 @@ public class AuthenticationController {
     public static final String BEARER_PREFIX = "Bearer";
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JTWTokenUtil jtwTokenUtil;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-    
-    @Autowired
-    private UserService userService;
+    private JwtTokenUtil jtwTokenUtil;
 
     @Autowired
     private MessageSource messageSource;
-
-    /**
-     * new Token
-     * 
-     * @param authenticationDTO
-     * @param result
-     * @return ResponseEntity<ResponseDTO<Token>>
-     * @throws AuthenticationException
-     */
-    @PostMapping
-    public ResponseEntity<ResponseDTO<UserDTO>> newTokenJwt(@Valid @RequestBody JwtAuthenticationDTO authenticationDTO, 
-        BindingResult result) throws AuthenticationException {
-        
-        ResponseDTO<UserDTO> response = new ResponseDTO<>();
-
-        if (result.hasErrors()) {
-            result.getAllErrors().forEach(error -> response.addError(error.getDefaultMessage()));
-            return ResponseEntity.badRequest().body(response);
-        }
-
-        Authentication authentication = authenticationManager
-            .authenticate(new UsernamePasswordAuthenticationToken(authenticationDTO.getEmail(), authenticationDTO.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationDTO.getEmail());
-        String token = jtwTokenUtil.getToken(userDetails);
-
-        Optional<User> optionalUser = userService.findUserByEmail(authenticationDTO.getEmail());
-        UserDTO userDTO = UserDTO.parseUserDTO(optionalUser.get());
-        userDTO.setToken(token);
-
-        response.setBody(userDTO);
-
-        return ResponseEntity.ok(response);
-    }
 
     @PostMapping("/refresh")
     public ResponseEntity<ResponseDTO<TokenDTO>> refreshTokenJwt(HttpServletRequest request) {

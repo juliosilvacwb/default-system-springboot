@@ -31,6 +31,10 @@ public class JwtUser implements UserDetails {
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
 
+    public void clearSensitiveInfo(){
+        this.password = "";
+    }
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
