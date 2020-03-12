@@ -1,21 +1,22 @@
 package com.springboot.api.controllers;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
 import com.springboot.api.services.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- * UserController
+ * SetupController
  */
 @RestController
-@RequestMapping("/users")
 public class SetupController {
 
     @Autowired
@@ -27,9 +28,9 @@ public class SetupController {
         return ResponseEntity.ok(response);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String addData(Model model) {
-        return "redirect:/swagger-ui.html";
+    @RequestMapping(value = "/")
+    public void redirect(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/swagger-ui.html");
     }
     
 }
